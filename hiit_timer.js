@@ -1,65 +1,98 @@
+class Timer {
+  intervalID;
+  constructor(timeLeft, div, exercise, nextExercise) {
+    this.timeLeft = timeLeft;
+    this.div = div;
+    this.exercise = exercise;
+    this.nextExercise = nextExercise;
+    this.exerciseCount = 0;
+    this.next = this.exerciseCount + 1;
+  }
 
-class Timer{
-    constructor(timeLeft,div,excercise,nextExcercise){
-        this.timeLeft = timeLeft;
-        this.div = div;
-        this.excercise = excercise;
-        this.nextExcercise = nextExcercise;
-        this.excerciseCount = 0;
-        this.next = this.excerciseCount + 1;
+  decrement() {
+    this.timeLeft--;
+    this.changeColor();
+    this.reset();
+    this.div.innerHTML = this.timeLeft;
+  }
+  changeColor() {
+    if (this.timeLeft < 16) {
+      this.div.classList.replace("green", "red");
+      this.beep();
     }
-    // decrement = setInterval(()=>{
-    //     this.timeLeft--;
-    //     this.changeColor();
-    //     this.reset(); 
-    //     console.log(this.timeleft)
-    // },1000)
-    decrement(){
-        this.timeLeft--;
-        this.changeColor();
-        this.reset(); 
-        this.div.innerHTML = this.timeLeft;
+  }
+  beep() {
+    var context = new AudioContext();
+    var o = context.createOscillator();
+    o.type = "sine";
+    o.connect(context.destination);
+    o.start();
+    setTimeout(function () {
+      o.stop();
+    }, 100);
+  }
+  reset() {
+    if (this.timeLeft < 1) {
+      this.timeLeft = 60;
+      this.div.classList.replace("red", "green");
+      this.beep();
+      this.exerciseCount++;
+      this.next++;
+      this.exercise.innerHTML = workout[this.exerciseCount];
+      this.nextExercise.innerHTML = workout[this.next];
     }
-    changeColor(){
-        if(this.timeLeft<16){
-            this.div.classList.replace("green","red");
-            this.beep();
-        }
-    }
-    beep(){
-        var context = new AudioContext();
-        var o = context.createOscillator();
-        o.type = "sine";
-        o.connect(context.destination);
-        o.start();
-        setTimeout(function(){ 
-        o.stop();
-        }, 100);
-    }
-    reset(){
-        if(this.timeLeft < 1){
-            this.timeLeft = 60;
-            this.div.classList.replace("red","green");
-            this.beep();
-            this.excerciseCount ++;
-            this.next ++;
-            this.excercise.innerHTML = workout[this.excerciseCount];
-            this.nextExcercise.innerHTML = workout[this.next];
-        }
-    }    
+  }
+
+  start() {
+    this.intervalID = setInterval(() => session.decrement(), 1000);
+  }
+
+  stop() {
+    clearInterval(this.intervalID);
+    this.timeLeft = 65;
+    this.div.innerHTML = this.timeLeft;
+  }
+
+  pause() {
+    clearInterval(this.intervalID);
+  }
+
+  updateDisplay() {
+    this.div.innerHTML = this.timeLeft;
+  }
 }
-const nextExcercise = document.querySelector('.next');
-const excercise = document.querySelector('.excercise');
-const timer = document.querySelector('.timer');
-const start_stop = document.querySelector('.start_stop');
-const workout = ['Star Jumps','Bicycle Crunches','High Knees','Russian Twists','Mountain Climbers','Lying Leg Raises','In & Out half Burpees','Side to Side Plank','Star Crunches','High Knee Fullout Jog'];
-var timeLeft = 65;
+const nextExercise = document.querySelector(".next");
+const exercise = document.querySelector(".exercise");
+const timer = document.querySelector(".timer");
+const startButton = document.querySelector("#start-button");
+const stopButton = document.querySelector("#stop-button");
 
+const workout = [
+  "Star Jumps",
+  "Bicycle Crunches",
+  "High Knees",
+  "Russian Twists",
+  "Mountain Climbers",
+  "Lying Leg Raises",
+  "In & Out half Burpees",
+  "Side to Side Plank",
+  "Star Crunches",
+  "High Knee Fullout Jog",
+];
 
-session = new Timer(timeLeft,timer,excercise,nextExcercise);
+let timeLeft = 65;
+let intervalID;
 
-excercise.innerHTML = workout[0];
-nextExcercise.innerHTML = workout[1];
+session = new Timer(timeLeft, timer, exercise, nextExercise);
+
+exercise.innerHTML = workout[0];
+nextExercise.innerHTML = workout[1];
 timer.innerHTML = session.timeLeft;
 
-start_stop.addEventListener('click',()=> setInterval(()=>session.decrement(),1000))
+startButton.addEventListener("click", () => {
+  session.start();
+});
+
+stopButton.addEventListener("click", () => {
+  session.stop();
+});
