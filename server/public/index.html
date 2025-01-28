@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="./app.js" defer></script>
+    <title>HIIT Timer</title>
+    <link rel="stylesheet" href="./styles.css"></link>
+  </head>
+  <body class="flex flex-col justify-center items-center gap-4 min-h-screen">
+    <div class="container mx-auto">
+      <div id="excercise-timer" class="timer green text-center text-9xl"></div>
+      <div class="w-max mx-auto">
+          
+        <button class="disabled:bg-gray-300 bg-green-500 px-3 py-1 hover:shadow-xl rounded-full cursor-pointer" id="start-button">Start Timer</button>
+        <button class="bg-red-500 px-3 py-1 hover:shadow-xl rounded-full cursor-pointer" id="stop-button">Stop Timer</button>
+        <button class="bg-blue-500 px-3 py-1 hover:shadow-xl rounded-full cursor-pointer" id="pause-button">Pause</button>  
+      </div>
+    </div>
+    
+
+    <div id="current-excercise" class="exercise text-5xl text-center"></div>
+    <div id="next-excercise" class="next text-4xl text-center"></div>
+  </body>
+</html>     

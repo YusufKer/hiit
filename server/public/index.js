@@ -1,5 +1,6 @@
 class Timer {
   intervalID;
+  
   constructor(timeLeft, div, exercise, nextExercise) {
     this.timeLeft = timeLeft;
     this.div = div;
@@ -13,24 +14,27 @@ class Timer {
     this.timeLeft--;
     this.changeColor();
     this.reset();
-    this.div.innerHTML = this.timeLeft;
+    this.div.innerHTML = this.timeleft;
   }
+  
   changeColor() {
     if (this.timeLeft < 16) {
       this.div.classList.replace("green", "red");
       this.beep();
     }
   }
+
   beep() {
     var context = new AudioContext();
     var o = context.createOscillator();
     o.type = "sine";
     o.connect(context.destination);
     o.start();
-    setTimeout(function () {
+  setTimeout(function () {
       o.stop();
     }, 100);
   }
+  
   reset() {
     if (this.timeLeft < 1) {
       this.timeLeft = 60;
@@ -44,7 +48,9 @@ class Timer {
   }
 
   start() {
-    this.intervalID = setInterval(() => session.decrement(), 1000);
+    this.intervalID = setInterval(() => {
+      session.decrement()
+    }, 1000);
   }
 
   stop() {
@@ -66,6 +72,7 @@ const exercise = document.querySelector(".exercise");
 const timer = document.querySelector(".timer");
 const startButton = document.querySelector("#start-button");
 const stopButton = document.querySelector("#stop-button");
+const pauseButton = document.querySelector("#pause-button");
 
 const workout = [
   "Star Jumps",
@@ -91,8 +98,15 @@ timer.innerHTML = session.timeLeft;
 
 startButton.addEventListener("click", () => {
   session.start();
+  startButton.disabled = true;
 });
 
 stopButton.addEventListener("click", () => {
   session.stop();
+  startButton.disabled = false;
 });
+
+pauseButton.addEventListener("click", () => {
+  session.pause();
+  startButton.disabled = false;
+})
